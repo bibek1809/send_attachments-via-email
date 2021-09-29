@@ -1,0 +1,34 @@
+import sqlite3
+import mysql.connector
+import pandas as pd
+DB_FILE = "./archive.dht"
+
+
+def import_table():
+    conn = None
+    #conn = connection.MySQLConnection(user='admin', password='Password',host='db_url',database='database_name')
+    conn = sqlite3.connect(DB_FILE)
+    query = f"SELECT * FROM Sample_Table"
+    cursor = conn.cursor()
+    cursor.execute(query)
+    result = cursor.fetchall()
+    return result
+
+
+table = import_table()
+
+from_db = []
+#formatting database into pandas
+for data in table:
+  data = list(data)
+  from_db.append(data)
+
+
+columns = ["mcq_id", "hall_name", "tags", "created_at"]
+df = pd.DataFrame(from_db, columns=columns)
+
+#formatting dataframe into csv file 
+df.to_csv('out.csv', index = False)
+
+
+
